@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven />
+
+    <!-- 设置使用注解的类所在的jar包 -->
+    <context:component-scan base-package="com.zwxu.controller,com.zwxu.service.*"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/views/"
+          p:suffix=".jsp">
+    </bean>
+
+    <!--加载配置文件-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--溢美+数据源-->
+    <bean id="yiplusDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="jdbc:mysql://${jdbc.yiplusaddress}/yjpayment?useUnicode=true&amp;characterEncoding=utf8
+"></property>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="username" value="${jdbc.yiplususername}"></property>
+        <property name="password" value="${jdbc.yipluspassword}"></property>
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxActive" value="5"/>
+        <property name="maxWait" value="30000"/>
+        <property name="poolPreparedStatements" value="false"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="-1"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <property name="minEvictableIdleTimeMillis" value="60000"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="filters" value="stat"/>
+        <property name="validationQuery" value="select 1"/>
+
+    </bean>
+    <bean id="yiplusSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="yiplusDataSource"/>
+        <property name="configLocation" value="classpath:Configuration.xml"/>
+        <property name="mapperLocations" value="classpath:sqlXml/yiplus/*.xml"/>
+    </bean>
+    <bean id="yiplusSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="yiplusSqlSessionFactory"></constructor-arg>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.zwxu.service.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="yiplusSqlSessionFactory"/>
+    </bean>
+    <!--溢美+数据源-->
+
+    <!--test+数据源-->
+    <bean id="testDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="jdbc:mysql://${jdbc.testaddress}/Test?useUnicode=true&amp;characterEncoding=utf8
+"></property>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="username" value="${jdbc.testusername}"></property>
+        <property name="password" value="${jdbc.testpassword}"></property>
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxActive" value="5"/>
+        <property name="maxWait" value="30000"/>
+        <property name="poolPreparedStatements" value="false"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="-1"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <property name="minEvictableIdleTimeMillis" value="60000"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="filters" value="stat"/>
+        <property name="validationQuery" value="select 1"/>
+
+    </bean>
+    <bean id="testSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="testDataSource"/>
+        <property name="configLocation" value="classpath:Configuration.xml"/>
+        <property name="mapperLocations" value="classpath:sqlXml/test/*.xml"/>
+    </bean>
+    <bean id="testSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="testSqlSessionFactory"></constructor-arg>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.zwxu.service.test"/>
+        <property name="sqlSessionFactoryBeanName" value="testSqlSessionFactory"/>
+    </bean>
+    <!--test+数据源-->
+
+</beans>

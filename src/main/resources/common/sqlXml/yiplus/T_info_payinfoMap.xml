@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zwxu.service.dao.IT_info_payinfoMap">
+<select id="getList" parameterType="com.zwxu.request.YiPlusAgentRequest" resultType="com.zwxu.entity.yiplus.T_info_payinfo">
+    SELECT * FROM t_info_payinfo
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        <if test="mercode!=null and mercode!=''">
+            <![CDATA[AND mercode = #{mercode}]]>
+        </if>
+        <if test="orderno!=null and orderno!=''">
+            AND orderno=#{orderno}
+        </if>
+        <if test="cardid!=null and cardid!=''">
+            AND cardid=#{cardid}
+        </if>
+        <if test="createtime!=null and createtime!=''">
+            <![CDATA[AND createtime >= #{createtime}]]>
+        </if>
+        <if test="createtimeEnd!=null and createtimeEnd!=''">
+            <![CDATA[AND createtime < #{createtimeEnd}]]>
+        </if>
+    </trim>
+    order by id desc limit  #{pageSize} offset #{skipCount} ;
+</select>
+</mapper>

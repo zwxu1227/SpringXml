@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zwxu.service.test.IT_goods_infoMap">
+<select id="getGoodsRest" parameterType="java.lang.String" resultType="com.zwxu.entity.test.t_googs_info">
+    SELECT * FROM t_googs_info where code =#{code}
+</select>
+<update id="updateGoodsAmount" parameterType="com.zwxu.request.buy">
+    UPDATE t_googs_info SET amout=amout-#{buys} where code=#{code}
+</update>
+    <update id="updateGoodsAmountv" parameterType="com.zwxu.request.buy">
+        UPDATE t_googs_info SET amout=amout-#{buys},version=version+1 where code=#{code} and version=#{version}
+    </update>
+</mapper>
